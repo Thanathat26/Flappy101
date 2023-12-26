@@ -3,12 +3,13 @@
     Background:
 
 <Background>:
+    id: background
     canvas.before:
         Rectangle:
             size: self.size
             pos: self.pos
             source: 'Background.jpg'
         Rectangle:
-            size:self.width, 138
-            pos: self.pos[0], self.pos[1] + self.height - 138
+            size:self.width, 350
+            pos: self.pos[0], self.pos[1] + self.height - 250
             texture: self.cloud_texture
