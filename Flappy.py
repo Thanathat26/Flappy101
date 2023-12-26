@@ -9,12 +9,13 @@ from kivy.animation import Animation
 from kivy.core.window import Window
 Builder.load_file('flappy.kv')
 class Background(Widget):
-    clound_texture = ObjectProperty(None)
+    cloud_texture = ObjectProperty(None)
     def __init__(self, **kwargs):
         super().__init__(**kwargs)
-        self.clound_texture = Image(source="cloud.png").texture
-        self.clound_texture.wrap = 'repeat'
-        self.clound_texture.uvisize = (Window.width)
+
+        self.cloud_texture = Image(source="cloud.png").texture
+        self.cloud_texture.wrap = 'repeat'
+        self.cloud_texture.uvsize = (Window.width / self.cloud_texture.width, -1)
 
     pass
 class Gameflappy(App):
