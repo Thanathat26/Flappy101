@@ -17,14 +17,20 @@ class Background(Widget):
         self.cloud_texture = Image(source="cloud1.png").texture
         self.cloud_texture.wrap = 'repeat'
         self.cloud_texture.uvsize = (Window.width / self.cloud_texture.width, -1)
-    def scroll_texture(self, time_passed):
-        print("scroll")
 
-        pass
+    def scroll_texture(self, time_passed):
+        self.cloud_texture.uvpos = ((self.cloud_texture.uvpos[0] + time_passed) % Window.width, self.cloud_texture.uvpos[1])
+        texture = self.property('cloud_texture')
+        texture.dispatch(self)
+
+
 class Gameflappy(App):
     def build(self):
-        return Background()
-        Clock.schedule_interval(self.root.ids.background.scroll_texture , 1/2.)
-    pass
+        layout = FloatLayout()
+        background = Background()
+        layout.add_widget(background)
+        Clock.schedule_interval(background.scroll_texture, 1/60.)
+        return layout
+    
 if __name__ == '__main__':
     Gameflappy().run()
