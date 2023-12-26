@@ -1,8 +1,10 @@
-FloatLayout:
-   Background:
-     canvas.before:
-      Rectangle:
-       size: self.size
-       pos:self.pos
-       source:background.jpg
-    
+# flappy.kv
+<FloatLayout>:
+    Background:
+
+<Background>:
+    canvas.before:
+        Rectangle:
+            size: self.size
+            pos: self.pos
+            source: 'Background.jpg'

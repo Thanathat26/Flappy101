@@ -6,7 +6,8 @@ Builder.load_file('flappy.kv')
 class Background(Widget):
     pass
 class Gameflappy(App):
-    pass
+    def build(self):
+        return Background()
 
 
 if __name__ == '__main__':
