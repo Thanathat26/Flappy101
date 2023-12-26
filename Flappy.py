@@ -9,13 +9,12 @@ class Seconscreen(Screen):
     pass
 class Screenmamage(ScreenManager):
     pass
-kv = Builder.load_file('flappy.kv')
-class MyApp(Widget):
-    pass 
+ 
 class Gameflappy(App):
     def build(self):
-        return Gameflappy(kv)
-    
+        Builder.load_file('flappy.kv')
+        return ScreenManager()
+
 if __name__ == '__main__':
     Gameflappy().run()
     

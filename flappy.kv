@@ -1,13 +1,29 @@
-WindowManager:
- Firstscreen:
- Seconscreen:
- <Firstscreen>:
-  name:"Name_p"
-  BoxLayout:
-    orientation:"vertical"
-    size:root.width, rootheight
-    
-<Seconscreenscreen>:
-  name:"Game_f"
-    orientation:"vertical"
-    size:root.width, rootheight
+ScreenManager:
+    Firstscreen:
+    Seconscreen:
+
+<Firstscreen>:
+    name: "Name_p"
+    BoxLayout:
+        orientation: "vertical"
+        size: root.width, root.height
+        Label:
+            text: "Enter Your Name"
+            font_size: 32
+        Button:
+            text: "Join game"
+            font_size: 32
+            on_press: root.on_button_click()
+
+<Seconscreen>:
+    name: "Game_f"
+    BoxLayout:
+        orientation: "vertical"
+        size: root.width, root.height
+        Label:
+            text: "Game Screen"
+            font_size: 32
+        Button:
+            text: "Join game"
+            font_size: 32
+            on_press: root.on_button_click()
