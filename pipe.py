@@ -12,6 +12,9 @@ class Pipe(Widget):
      pipe_body_texture = ObjectProperty
      lower_pipe = ListProperty((0,0,1,0,1,1,0,1))
      Top_pipe = ListProperty((0,0,1,0,1,1,0,1))
+
+
     def __init__(self, **kwargs):
         super().__init__(**kwargs)
-        self.pipe_body_texture = Image(source='pipe')
+        self.pipe_body_texture = Image(source='pipe_body')
+        self.pipe_body_texture = 'repeat'
