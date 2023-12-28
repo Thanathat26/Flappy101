@@ -31,7 +31,16 @@ class Background(Widget):
         texture.dispatch(self)
         texture = self.property('floor_texture')
         texture.dispatch(self)
-    
+class Pipe(Widget):
+    def __init__(self, **kwargs):
+        super().__init__(**kwargs)
+        self.pipe_body = Image(source='pipe.png')
+        self.pipe_head = Image(source='pipe_head.png')
+        self.add_widget(self.pipe_body)
+        self.add_widget(self.pipe_head)
+
+    def update(self):
+        self.x -= 5
 
 class Gameflappy(App):
     def build(self):
@@ -40,21 +49,11 @@ class Gameflappy(App):
         layout.add_widget(background)
         Clock.schedule_interval(background.scroll_texture, 1/60.)
         return layout
-    def create_pipe(self):
-        pipe = Pipe()
-        pipe.x = Window.width
-        pipe.y = randint(50, Window.height - 50)
-        self.root.add_widget(pipe)
-        self.pipes.append(pipe)
-    def update(self, dt):
-        for pipe in self.pipes[:]:
-            pipe.update()
-            if pipe.right < 0:
-                self.root.remove_widget(pipe)
-                self.pipes.remove(pipe)
-        if self.pipes and self.pipes[-1].x < Window.width - 200:
-            self.create_pipe()
-        
+    def start(self):
+        num_pipes = 5
+        distance_between_pipes = Window.width / (num_pipes - 1)
+        for i in range(num_pipes):
+             self.create_pipe()
     
 if __name__ == '__main__':
     Gameflappy().run()
