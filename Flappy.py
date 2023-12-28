@@ -9,6 +9,7 @@ from kivy.animation import Animation
 from kivy.core.window import Window
 from kivy.clock import Clock
 from random import randint
+from pipe import Pipe
 Builder.load_file('flappy.kv')
 class Background(Widget):
     cloud_texture = ObjectProperty(None)

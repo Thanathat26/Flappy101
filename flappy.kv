@@ -1,7 +1,5 @@
-# flappy.kv
 <FloatLayout>:
     Background:
-
 <Background>:
     id: background
     canvas.before:
@@ -10,16 +8,32 @@
             pos: self.pos
             source: 'Background.jpg'
         Rectangle:
-            size:self.width, 350
+            size: self.width, 350
             pos: self.pos[0], self.pos[1] + self.height - 250
             texture: self.cloud_texture
         Rectangle:
-            size:self.width, 150
+            size: self.width, 150
             pos: self.pos[0], self.pos[1]  
             texture: self.floor_texture
-    Button:
-        text: "Start game"
+
+    Pipe:
         size_hint: None, None
-        size: 150, 100
-        pos_hint: {"center_x": 5, "center_y": 5}
-        on_release: app.start_game()
+        size: 64, root.height - 96
+        pos: 200, 96
+        canvas.before:
+            Color:
+                rgba: 1, 1, 1, 0.2
+            Rectangle:
+                size: self.size
+                pos: self.pos
+
+
+
+
+
+#<Button>:
+ #   text: "Start game"
+  #  size_hint: None, None
+   # size: 150, 100
+    #pos_hint: {"center_x": 0.5, "center_y": 0.5}
+    #on_release: app.start_game()
