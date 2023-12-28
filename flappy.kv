@@ -1,39 +1,33 @@
 <FloatLayout>:
     Background:
+    Pipe:
+    Pipe:
+    Pipe:
+    Pipe:
+
 <Background>:
     id: background
     canvas.before:
         Rectangle:
             size: self.size
             pos: self.pos
-            source: 'Background.jpg'
+            source: "background.jpg"
         Rectangle:
-            size: self.width, 350
-            pos: self.pos[0], self.pos[1] + self.height - 250
+            size: self.width, 138
+            pos: self.pos[0], self.pos[1] + self.height - 138
             texture: self.cloud_texture
         Rectangle:
-            size: self.width, 150
-            pos: self.pos[0], self.pos[1]  
+            size: self.width, 96
+            pos: self.pos[0], self.pos[1]
             texture: self.floor_texture
 
-    Pipe:
-        size_hint: None, None
-        size: 64, root.height - 96
-        pos: 200, 96
-        canvas.before:
-            Color:
-                rgba: 1, 1, 1, 0.2
-            Rectangle:
-                size: self.size
-                pos: self.pos
-
-
-
-
-
-#<Button>:
- #   text: "Start game"
-  #  size_hint: None, None
-   # size: 150, 100
-    #pos_hint: {"center_x": 0.5, "center_y": 0.5}
-    #on_release: app.start_game()
+<Pipe>:
+    size_hint: None, None
+    size: 64, self.parent.height - 96
+    pos: 100, 96
+    canvas.before:
+        Color:
+            rgba: 1, 1, 1, 0.2
+        Rectangle:
+            size: self.size
+            pos: self.pos
