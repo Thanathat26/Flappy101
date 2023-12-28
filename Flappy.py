@@ -8,6 +8,7 @@ from kivy.uix.image import Image
 from kivy.animation import Animation
 from kivy.core.window import Window
 from kivy.clock import Clock
+from random import randint
 Builder.load_file('flappy.kv')
 class Background(Widget):
     cloud_texture = ObjectProperty(None)
@@ -30,7 +31,7 @@ class Background(Widget):
         texture.dispatch(self)
         texture = self.property('floor_texture')
         texture.dispatch(self)
-
+    
 
 class Gameflappy(App):
     def build(self):
@@ -39,6 +40,21 @@ class Gameflappy(App):
         layout.add_widget(background)
         Clock.schedule_interval(background.scroll_texture, 1/60.)
         return layout
+    def create_pipe(self):
+        pipe = Pipe()
+        pipe.x = Window.width
+        pipe.y = randint(50, Window.height - 50)
+        self.root.add_widget(pipe)
+        self.pipes.append(pipe)
+    def update(self, dt):
+        for pipe in self.pipes[:]:
+            pipe.update()
+            if pipe.right < 0:
+                self.root.remove_widget(pipe)
+                self.pipes.remove(pipe)
+        if self.pipes and self.pipes[-1].x < Window.width - 200:
+            self.create_pipe()
+        
     
 if __name__ == '__main__':
     Gameflappy().run()
