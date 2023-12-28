@@ -3,8 +3,8 @@ from kivy.properties import NumericProperty, ObjectProperty, ListProperty
 from kivy.uix.image import Image
 
 class Pipe(Widget):
-    Gap_size = NumericProperty(60)
-    cap_size = NumericProperty(20)
+    GAP_SIZE = NumericProperty(60)
+    CAP_SIZE = NumericProperty(20)
     pipe_center = NumericProperty(0)
     bottom_body_position = NumericProperty(0)
     bottom_cap_position = NumericProperty(0)
@@ -12,7 +12,7 @@ class Pipe(Widget):
     top_cap_position = NumericProperty(0)
     pipe_body_texture = ObjectProperty(None)
     lower_pipe = ListProperty((0, 0, 1, 0, 1, 1, 0, 1))
-    Top_pipe = ListProperty((0, 0, 1, 0, 1, 1, 0, 1))
+    top_pipe = ListProperty((0, 0, 1, 0, 1, 1, 0, 1))
 
     def __init__(self, **kwargs):
         super().__init__(**kwargs)
@@ -25,7 +25,7 @@ class Pipe(Widget):
         self.lower_pipe[5] = lower_body_size / 20.
         self.lower_pipe[7] = lower_body_size / 20.
 
-        top_body_size = self.pipe_center - self.top_body_position
+        top_body_size = self.top_cap_position - self.top_body_position
 
-        self.Top_pipe[5] = top_body_size / 20.
-        self.Top_pipe[7] = top_body_size / 20.
+        self.top_pipe[5] = top_body_size / 20.
+        self.top_pipe[7] = top_body_size / 20.
