@@ -16,10 +16,11 @@
             texture: self.floor_texture
 
     Button:
-        text: "Start game"
-        pos: [450,400]
-        size: 300,100
+        text: "Exit"
+        pos: [1100,0]
+        size: 100,100
         id: start_button
         on_release:
             self.disabled = True
             self.opacity = 0
+            background.start_game()

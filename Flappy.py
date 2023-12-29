@@ -11,18 +11,13 @@ from kivy.uix.image import Image
 from kivy.properties import ObjectProperty
 from PIL import Image as PilImage
 from io import BytesIO
+from kivy.core.audio import SoundLoader
 from random import randint
 Builder.load_file('flappy.kv')
-class Enemy(Widget):
-    def __init__(self, **kwargs):
-        super().__init__(**kwargs)
-        self.source = "rocket.png"
-        self.size_hint =(None,None)
-        self.size(50,50)
-        self.pos =(Window.width, randint(100, Window.height - 100))
-        
 class GameWidget(Widget):
     bird_pos = ObjectProperty((100, 200))
+    enemy_pos = ObjectProperty((500, 200))
+    enemy_speed = 600
 
     def __init__(self, **kwargs):
         super().__init__(**kwargs)
@@ -31,9 +26,16 @@ class GameWidget(Widget):
         self._keyboard.bind(on_key_down=self._on_key_down)
         self._keyboard.bind(on_key_up=self._on_key_up)
         self.pressed_keys = set()
+        self.sound = SoundLoader.load('CHIPI.mp3')
+        self.sound.play()
         Clock.schedule_interval(self.move_step, 0)
         with self.canvas:
             self.bird = Rectangle(source='bird2.png', pos=self.bird_pos, size=(100, 100))
+        self.create_enemy()
+    def create_enemy(self):
+        self.enemy_pos = (Window.width, randint(50, Window.height - 200))
+        with self.canvas:
+            self.enemy = Rectangle(source='rocket2.png', pos=self.enemy_pos, size=(100, 100))
 
     def _on_keyboard_closed(self):
         self._keyboard.unbind(on_key_down=self._on_key_down)
@@ -63,7 +65,11 @@ class GameWidget(Widget):
         if 'd' in self.pressed_keys:
             cur_x += step
         self.bird.pos = (cur_x, cur_y)
+        self.enemy_pos = (self.enemy_pos[0] - self.enemy_speed * dt, self.enemy_pos[1])
+        self.enemy.pos = self.enemy_pos
 
+        if self.enemy_pos[0] < -100:
+            self.create_enemy()
 class Background(Widget):
     cloud_texture = ObjectProperty(None)
     floor_texture = ObjectProperty(None)
