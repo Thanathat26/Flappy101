@@ -24,15 +24,17 @@ def collides(rect1,rect2):
         rect1[1] + rect1[3] > rect2[1])
 class GameWidget(Widget):
     bird_pos = ObjectProperty((100, 200))
+    coin_pos = ObjectProperty((500, 200))
     enemy_pos = ObjectProperty((500, 200))
+    coin_speed = 800
     enemy_speed = 600
+    score = 0
     def create_collision_popup(self):
         content = Label(text='Collision Detected!\nGame Over', font_size=20)
         popup = Popup(title='Collision', content=content, size_hint=(None, None), size=(400, 200))
         popup.open()
         Clock.schedule_once(lambda dt: popup.dismiss(), 3) 
          
-        
     def __init__(self, **kwargs):
         super().__init__(**kwargs)
         self._keyboard = Window.request_keyboard(
@@ -46,10 +48,16 @@ class GameWidget(Widget):
         with self.canvas:
             self.bird = Rectangle(source='bird2.png', pos=self.bird_pos, size=(100, 100))
         self.create_enemy()
+        self.create_coin()
     def create_enemy(self):
         self.enemy_pos = (Window.width, randint(50, Window.height - 200))
         with self.canvas:
             self.enemy = Rectangle(source='rocket2.png', pos=self.enemy_pos, size=(100, 100))
+        self.coin_pos = (Window.width, randint(50, Window.height - 200))
+    def create_coin(self):
+        self.coin_pos = (Window.width, randint(50, Window.height - 200))
+        with self.canvas:
+            self.coin = Rectangle(source='coin.png', pos=self.coin_pos, size=(200, 100))
 
     def _on_keyboard_closed(self):
         self._keyboard.unbind(on_key_down=self._on_key_down)
@@ -81,11 +89,18 @@ class GameWidget(Widget):
         self.bird.pos = (cur_x, cur_y)
         self.enemy_pos = (self.enemy_pos[0] - self.enemy_speed * dt, self.enemy_pos[1])
         self.enemy.pos = self.enemy_pos
-
+        coin_step = self.coin_speed * dt
+        self.coin_pos = (self.coin_pos[0] - self.coin_speed * dt, self.coin_pos[1])
+        self.coin.pos = self.coin_pos
         if self.enemy_pos[0] < -100:
             self.create_enemy()
         if collides((cur_x, cur_y, 100, 100), (self.enemy_pos[0], self.enemy_pos[1], self.enemy.size[0], self.enemy.size[1])):
             self.create_collision_popup()
+        
+        if collides((cur_x, cur_y, 100, 100), (self.coin_pos[0], self.coin_pos[1], self.coin.size[0], self.coin.size[1])):
+            self.score += 1
+            print(self.score)
+            
 class Background(Widget):
     cloud_texture = ObjectProperty(None)
     floor_texture = ObjectProperty(None)
