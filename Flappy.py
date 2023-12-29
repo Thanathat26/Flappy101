@@ -17,7 +17,7 @@ class Background(Widget):
     def __init__(self, **kwargs):
         super().__init__(**kwargs)
 
-        self.cloud_texture = Image(source="cloud1.png").texture
+        self.cloud_texture = Image(source="cloud3.png").texture
         self.cloud_texture.wrap = 'repeat'
         self.cloud_texture.uvsize = (Window.width / self.cloud_texture.width, -1)
 
@@ -33,12 +33,31 @@ class Background(Widget):
         texture.dispatch(self)
         texture = self.property('floor_texture')
         texture.dispatch(self)
+
+class Bird(Image):
+    def __init__(self, **kwargs):
+        super().__init__(**kwargs)
+        self.source = "bird.png"
+        self.size_hint = (None, None)
+        self.size = (50, 50)
+        self.pos = (100, 200)
+        self.velocity_y = 0
+
+    def update(self, dt):
+        self.velocity_y -= 500 * dt  
+        self.y += self.velocity_y * dt
+
+        if self.top > self.parent.top:
+            self.top = self.parent.top
+            self.velocity_y = 0
 class Gameflappy(App):
     pipes = []
     def build(self):
         layout = FloatLayout()
+        self.bird = Bird()
         background = Background()
         layout.add_widget(background)
+        layout.add_widget(self.bird)
         Clock.schedule_interval(background.scroll_texture, 1/60.)
         return layout
     def start_game(self):
