@@ -100,7 +100,6 @@ class GameWidget(Widget):
         if collides((cur_x, cur_y, 100, 100), (self.coin_pos[0], self.coin_pos[1], self.coin.size[0], self.coin.size[1])):
             self.score += 1
             print(self.score)
-            
 class Background(Widget):
     cloud_texture = ObjectProperty(None)
     floor_texture = ObjectProperty(None)
