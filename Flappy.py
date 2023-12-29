@@ -14,6 +14,8 @@ from io import BytesIO
 from kivy.core.audio import SoundLoader
 from random import randint
 Builder.load_file('flappy.kv')
+def collides(rect1,rect2):
+    pass
 class GameWidget(Widget):
     bird_pos = ObjectProperty((100, 200))
     enemy_pos = ObjectProperty((500, 200))
@@ -68,8 +70,10 @@ class GameWidget(Widget):
         self.enemy_pos = (self.enemy_pos[0] - self.enemy_speed * dt, self.enemy_pos[1])
         self.enemy.pos = self.enemy_pos
 
-        if self.enemy_pos[0] < -100:
-            self.create_enemy()
+        if self.enemy_pos[0] < -100 or collides((self.bird_pos,self.bird.size),(self.enemy_pos,self.enemy.size)):
+          print("Collision detected!")
+          self.create_enemy()
+
 class Background(Widget):
     cloud_texture = ObjectProperty(None)
     floor_texture = ObjectProperty(None)
