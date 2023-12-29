@@ -13,14 +13,26 @@ from PIL import Image as PilImage
 from io import BytesIO
 from kivy.core.audio import SoundLoader
 from random import randint
+from kivy.uix.popup import Popup
+from kivy.uix.label import Label
 Builder.load_file('flappy.kv')
 def collides(rect1,rect2):
-    pass
+    return (
+        rect1[0] < rect2[0] + rect2[2] and
+        rect1[0] + rect1[2] > rect2[0] and
+        rect1[1] < rect2[1] + rect2[3] and
+        rect1[1] + rect1[3] > rect2[1])
 class GameWidget(Widget):
     bird_pos = ObjectProperty((100, 200))
     enemy_pos = ObjectProperty((500, 200))
     enemy_speed = 600
-
+    def create_collision_popup(self):
+        content = Label(text='Collision Detected!\nGame Over', font_size=20)
+        popup = Popup(title='Collision', content=content, size_hint=(None, None), size=(400, 200))
+        popup.open()
+        Clock.schedule_once(lambda dt: popup.dismiss(), 3) 
+         
+        
     def __init__(self, **kwargs):
         super().__init__(**kwargs)
         self._keyboard = Window.request_keyboard(
@@ -70,10 +82,10 @@ class GameWidget(Widget):
         self.enemy_pos = (self.enemy_pos[0] - self.enemy_speed * dt, self.enemy_pos[1])
         self.enemy.pos = self.enemy_pos
 
-        if self.enemy_pos[0] < -100 or collides((self.bird_pos,self.bird.size),(self.enemy_pos,self.enemy.size)):
-          print("Collision detected!")
-          self.create_enemy()
-
+        if self.enemy_pos[0] < -100:
+            self.create_enemy()
+        if collides((cur_x, cur_y, 100, 100), (self.enemy_pos[0], self.enemy_pos[1], self.enemy.size[0], self.enemy.size[1])):
+            self.create_collision_popup()
 class Background(Widget):
     cloud_texture = ObjectProperty(None)
     floor_texture = ObjectProperty(None)
