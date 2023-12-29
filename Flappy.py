@@ -9,9 +9,18 @@ from kivy.core.window import Window
 from kivy.graphics import Rectangle
 from kivy.uix.image import Image
 from kivy.properties import ObjectProperty
-
+from PIL import Image as PilImage
+from io import BytesIO
+from random import randint
 Builder.load_file('flappy.kv')
-
+class Enemy(Widget):
+    def __init__(self, **kwargs):
+        super().__init__(**kwargs)
+        self.source = "rocket.png"
+        self.size_hint =(None,None)
+        self.size(50,50)
+        self.pos =(Window.width, randint(100, Window.height - 100))
+        
 class GameWidget(Widget):
     bird_pos = ObjectProperty((100, 200))
 
@@ -44,7 +53,7 @@ class GameWidget(Widget):
     def move_step(self, dt):
         cur_x = self.bird.pos[0]
         cur_y = self.bird.pos[1]
-        step = 100 * dt
+        step = 300 * dt
         if 'w' in self.pressed_keys:
             cur_y += step
         if 's' in self.pressed_keys:
