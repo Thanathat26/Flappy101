@@ -21,7 +21,7 @@ class Background(Widget):
         self.cloud_texture.wrap = 'repeat'
         self.cloud_texture.uvsize = (Window.width / self.cloud_texture.width, -1)
 
-        self.floor_texture = Image(source="floor.png").texture
+        self.floor_texture = Image(source="floor3.png").texture
         self.floor_texture.wrap = 'repeat'
         self.floor_texture.uvsize = (Window.width / self.cloud_texture.width, -1)
 
@@ -37,9 +37,9 @@ class Background(Widget):
 class Bird(Image):
     def __init__(self, **kwargs):
         super().__init__(**kwargs)
-        self.source = "bird.png"
+        self.source = "bird1.png"
         self.size_hint = (None, None)
-        self.size = (50, 50)
+        self.size = (250, 250)
         self.pos = (100, 200)
         self.velocity_y = 0
 
