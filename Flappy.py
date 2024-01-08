@@ -13,6 +13,7 @@ from PIL import Image as PilImage
 from io import BytesIO
 from kivy.core.audio import SoundLoader
 from random import randint
+from kivy.uix.label import Label
 from kivy.uix.popup import Popup
 from kivy.uix.label import Label
 Builder.load_file('flappy.kv')
@@ -29,14 +30,13 @@ class GameWidget(Widget):
     slow_pos = ObjectProperty((700, 500))
     coin_speed = 800
     enemy_speed = 600
-    slowness_speed = 1500
+    slowness_speed = 600
     score = 0
     def create_collision_popup(self):
         content = Label(text='Collision Detected!\nGame Over', font_size=20)
         popup = Popup(title='Collision', content=content, size_hint=(None, None), size=(400, 200))
         popup.open()
         Clock.schedule_once(lambda dt: popup.dismiss(), 3) 
-         
     def __init__(self, **kwargs):
         super().__init__(**kwargs)
         self._keyboard = Window.request_keyboard(
@@ -46,6 +46,7 @@ class GameWidget(Widget):
         self.pressed_keys = set()
         self.sound = SoundLoader.load('CHIPI.mp3')
         self.sound.play()
+        self.score_label = Label(text='Score: 0', pos=(Window.width - 100, Window.height - 50), font_size=20)
         Clock.schedule_interval(self.move_step, 0)
         with self.canvas:
             self.bird = Rectangle(source='bird2.png', pos=self.bird_pos, size=(100, 100))
@@ -109,11 +110,13 @@ class GameWidget(Widget):
             self.create_collision_popup()
         if collides((cur_x, cur_y, 00, 100), (self.coin_pos[0], self.coin_pos[1], self.coin.size[0], self.coin.size[1])):
             self.score += 1
+            self.score_label.text = f'Score: {self.score}'
             print(self.score)
-        if self.slowness_pos[0] < -200:
-            self.coin_speed *= 0.5 
-            self.enemy_speed *= 0.5 
+        if self.slowness_pos[0] < -4000:
             self.create_slowness()
+        if collides((cur_x, cur_y, 00, 100), (self.slowness_pos[0], self.slowness_pos[1], self.slowness.size[0], self.slowness.size[1])):
+            self.coin_speed *= 0.1
+            self.enemy_speed *= 0.1
 class Background(Widget):
     cloud_texture = ObjectProperty(None)
     floor_texture = ObjectProperty(None)
@@ -153,6 +156,7 @@ class Gameflappy(App):
         layout.add_widget(background)
         Clock.schedule_interval(background.scroll_texture, 1/60.)
         layout.add_widget(game_widget)
+
         return layout
 
 if __name__ == '__main__':
