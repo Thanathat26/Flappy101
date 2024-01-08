@@ -26,8 +26,10 @@ class GameWidget(Widget):
     bird_pos = ObjectProperty((100, 200))
     coin_pos = ObjectProperty((500, 200))
     enemy_pos = ObjectProperty((500, 200))
+    slow_pos = ObjectProperty((700, 500))
     coin_speed = 800
     enemy_speed = 600
+    slowness_speed = 1500
     score = 0
     def create_collision_popup(self):
         content = Label(text='Collision Detected!\nGame Over', font_size=20)
@@ -49,6 +51,7 @@ class GameWidget(Widget):
             self.bird = Rectangle(source='bird2.png', pos=self.bird_pos, size=(100, 100))
         self.create_enemy()
         self.create_coin()
+        self.create_slowness()
     def create_enemy(self):
         self.enemy_pos = (Window.width, randint(50, Window.height - 200))
         with self.canvas:
@@ -58,6 +61,11 @@ class GameWidget(Widget):
         self.coin_pos = (Window.width, randint(50, Window.height - 200))
         with self.canvas:
             self.coin = Rectangle(source='coin.png', pos=self.coin_pos, size=(200, 100))
+    def create_slowness(self):
+        self.slowness_pos = (Window.width, randint(50, Window.height - 200))
+        with self.canvas:
+            self.slowness = Rectangle(source='slowness.png', pos=self.slow_pos, size=(200, 100))
+            
 
     def _on_keyboard_closed(self):
         self._keyboard.unbind(on_key_down=self._on_key_down)
@@ -92,24 +100,34 @@ class GameWidget(Widget):
         coin_step = self.coin_speed * dt
         self.coin_pos = (self.coin_pos[0] - self.coin_speed * dt, self.coin_pos[1])
         self.coin.pos = self.coin_pos
+        slowness_step = self.slowness_speed * dt
+        self.slowness_pos = (self.slowness_pos[0] - self.slowness_speed * dt, self.slowness_pos[1])
+        self.slowness.pos = self.slowness_pos
         if self.enemy_pos[0] < -100:
             self.create_enemy()
         if collides((cur_x, cur_y, 100, 100), (self.enemy_pos[0], self.enemy_pos[1], self.enemy.size[0], self.enemy.size[1])):
             self.create_collision_popup()
-        
-        if collides((cur_x, cur_y, 100, 100), (self.coin_pos[0], self.coin_pos[1], self.coin.size[0], self.coin.size[1])):
+        if collides((cur_x, cur_y, 00, 100), (self.coin_pos[0], self.coin_pos[1], self.coin.size[0], self.coin.size[1])):
             self.score += 1
             print(self.score)
+        if self.slowness_pos[0] < -200:
+            self.coin_speed *= 0.5 
+            self.enemy_speed *= 0.5 
+            self.create_slowness()
 class Background(Widget):
     cloud_texture = ObjectProperty(None)
     floor_texture = ObjectProperty(None)
     bird_texture = ObjectProperty(None)
+    slowness_texture = ObjectProperty(None)
+
 
     def __init__(self, **kwargs):
         super().__init__(**kwargs)
         self.cloud_texture = Image(source="cloud3.png").texture
         self.cloud_texture.wrap = 'repeat'
         self.cloud_texture.uvsize = (Window.width / self.cloud_texture.width, -1)
+        
+        self.slowness_texture = Image(source="slowness.png").texture
 
         self.floor_texture = Image(source="floor3.png").texture
         self.floor_texture.wrap = 'repeat'
@@ -127,7 +145,6 @@ class Background(Widget):
         texture.dispatch(self)
         texture = self.property('bird_texture')
         texture.dispatch(self)
-
 class Gameflappy(App):
     def build(self):
         layout = FloatLayout()
