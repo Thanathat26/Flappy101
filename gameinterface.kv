@@ -5,16 +5,19 @@
 
     Label:
         id: Flappy
-        text: "Choose the game you want"
-        font_size: 32
+        text: "Choose the game you want to play"
+        size_hint: None,None
+        size: 1150, 1300
+        font_size: 50
 
     Button:
         text: "Hello"
         font_size: 32
-        size_hint: .15, 12000000000000  
+        size_hint: None,None
+        size: 1150, 900
         background_color:0,0,0,0,
-        pos_hint:{'center_x':0.5}
+        pos_hint:{'center_x':0.7}
         Image:
-            source: 'Flappyinter.png'
+            source: 'Flappyinter1.png'
             center_x: self.parent.center_x
             center_y: self.parent.center_y
