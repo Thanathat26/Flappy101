@@ -27,15 +27,18 @@ class GameWidget(Widget):
     coin_pos = ObjectProperty((500, 200))
     enemy_pos = ObjectProperty((500, 200))
     slow_pos = ObjectProperty((700, 500))
+    speeds_pos = ObjectProperty((700, 500))
     coin_speed = 800
     enemy_speed = 600
     slowness_speed = 600
+    speeds_speed = 500
     score = 0
     def create_collision_popup(self):
         content = Label(text='Collision Detected!\nGame Over', font_size=20)
         popup = Popup(title='Collision', content=content, size_hint=(None, None), size=(400, 200))
         popup.open()
         Clock.schedule_once(lambda dt: popup.dismiss(), 3) 
+        Clock.schedule_once(lambda dt: self.close_game(), 3)
     def __init__(self, **kwargs):
         super().__init__(**kwargs)
         self._keyboard = Window.request_keyboard(
@@ -52,6 +55,7 @@ class GameWidget(Widget):
         self.create_enemy()
         self.create_coin()
         self.create_slowness()
+        self.create_speeds()
     def create_enemy(self):
         self.enemy_pos = (Window.width, randint(50, Window.height - 200))
         with self.canvas:
@@ -64,7 +68,12 @@ class GameWidget(Widget):
     def create_slowness(self):
         self.slowness_pos = (Window.width, randint(50, Window.height - 200))
         with self.canvas:
-            self.slowness = Rectangle(source='slowness.png', pos=self.slow_pos, size=(200, 100))
+            self.slowness = Rectangle(source='slowness1.png', pos=self.slow_pos, size=(200, 100))
+    def create_speeds(self):
+        self.speeds_pos = (Window.width, randint(50, Window.height - 200))
+        with self.canvas:
+            self.speeds = Rectangle(source='slowness.png', pos=self.speeds_pos, size=(200, 100))
+            
             
 
     def _on_keyboard_closed(self):
@@ -103,6 +112,8 @@ class GameWidget(Widget):
         slowness_step = self.slowness_speed * dt
         self.slowness_pos = (self.slowness_pos[0] - self.slowness_speed * dt, self.slowness_pos[1])
         self.slowness.pos = self.slowness_pos
+        self.speeds_pos = (self.speeds_pos[0] - self.speeds_speed * dt, self.speeds_pos[1])
+        self.speeds.pos = self.speeds_pos
         if self.enemy_pos[0] < -100:
             self.create_enemy()
         if collides((cur_x, cur_y, 100, 100), (self.enemy_pos[0], self.enemy_pos[1], self.enemy.size[0], self.enemy.size[1])):
@@ -111,17 +122,28 @@ class GameWidget(Widget):
             self.score += 1
             self.score_label.text = f'Score: {self.score}'
             print(self.score)
-        if self.slowness_pos[0] < -4000:
+        if self.slowness_pos[0] < -9000:
             self.create_slowness()
+            
+        if self.speeds_pos[0] < -150:
+            self.create_speeds()
+
         if collides((cur_x, cur_y, 00, 100), (self.slowness_pos[0], self.slowness_pos[1], self.slowness.size[0], self.slowness.size[1])):
-            self.coin_speed *= 0.1
-            self.enemy_speed *= 0.1
+            self.coin_speed -= 10
+            self.enemy_speed -= 10
+        if collides((cur_x, cur_y, 00, 100), (self.speeds_pos[0], self.speeds_pos[1], self.speeds.size[0], self.speeds.size[1])):
+            self.coin_speed += 10
+            self.enemy_speed += 10
+
+    def close_game(self):
+        App.get_running_app().stop()
 class Background(Widget):
     cloud_texture = ObjectProperty(None)
     floor_texture = ObjectProperty(None)
     bird_texture = ObjectProperty(None)
     slowness_texture = ObjectProperty(None)
-
+    speeds_texture = ObjectProperty(None)
+    
 
     def __init__(self, **kwargs):
         super().__init__(**kwargs)
@@ -129,7 +151,9 @@ class Background(Widget):
         self.cloud_texture.wrap = 'repeat'
         self.cloud_texture.uvsize = (Window.width / self.cloud_texture.width, -1)
         
-        self.slowness_texture = Image(source="slowness.png").texture
+        self.slowness_texture = Image(source="slowness1.png").texture
+        self.speeds_texture = Image(source="slowness.png").texture
+
 
         self.floor_texture = Image(source="floor3.png").texture
         self.floor_texture.wrap = 'repeat'
