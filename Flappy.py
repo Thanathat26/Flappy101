@@ -1,5 +1,4 @@
 # main.py
-
 from kivy.app import App
 from kivy.uix.floatlayout import FloatLayout
 from kivy.clock import Clock

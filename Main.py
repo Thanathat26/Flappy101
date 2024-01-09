@@ -5,6 +5,7 @@ from kivy.uix.button import Button
 from kivy.uix.label import Label
 from kivy.lang import Builder
 from kivy.uix.widget import Widget
+import subprocess
 Builder.load_file('Flappy.kv')
 Builder.load_file('gameinterface.kv')
 class Mylayout(Widget):
@@ -12,5 +13,8 @@ class Mylayout(Widget):
 class Button1(App):
     def build(self):
         return Mylayout()
+    def launch_flappy(self):
+        subprocess.Popen(["python", "flappy.py"])
+    
 if __name__ == '__main__':
     Button1().run()
