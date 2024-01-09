@@ -1,7 +1,8 @@
 <Mylayout>:
     orientation: "vertical"
-    padding: 500
-    spacing: 500
+    size:root.width,root.height
+    padding: 50
+    spacing: 20
 
     Label:
         id: Flappy
@@ -13,13 +14,13 @@
     Button:
         text: "Hello"
         font_size: 32
-        size_hint: None,None
-        size: 1150, 900
-        background_color:0,0,0,0,
-        pos_hint:{'center_x':0.7}
+        size_hint: .5,.5
+        pos_hint:{"center_x": 0.5}
+        size: 200, 100
+        background_color:0,0,0,1,
         Image:
             source: 'Flappyinter1.png'
             size_hint: None,None
-            size: 250, 500
+            size: 200, 100
             center_x: self.parent.center_x
             center_y: self.parent.center_y
