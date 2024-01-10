@@ -1,33 +1,3 @@
-#WindowManager:
- #   HOME:
-  #  Scond:
-    #Background:
-   # StartScreen:
-#<HOME>:
- #   name: "HOME"
-  #  BoxLayout:
-   #     orientation: "vertical"
-    #    size: root.width, root.height
-     #   Label:
-      #      text: "GAME"
-       #     font_size: "32"
-        #Button:
-         #   text: "Choose Game"
-         #   font_size: "32"
-          #  on_release: app.root.current = "Background"
-#<Scond>:
- #   name: "2"
-  #  BoxLayout:
-   #     orientation: "vertical"
-    #    size: root.width, root.height
-     #   Label:
-      #      text: "GAME"
-       #     font_size: "32"
-        #Button:
-         #   text: "Choose Game"
-          #  font_size: "32"
-           # on_release: app.root.current = "HOME"
-
 <Background>:
     id: background
     canvas.before:
@@ -43,10 +13,3 @@
             size: self.width, 250
             pos: self.pos[0], self.pos[1]
             texture: self.floor_texture
-#<StartScreen>:
- #   name: 'start'
-  #  FloatLayout:
-   #     Button:
-    #        text: 'Start Game'
-     #       on_release:
-      #          app.root.current = 'game'

@@ -40,7 +40,7 @@ class GameWidget(Widget):
     speeds_speed = 900
     score = 0
     def update_bird_texture(self):
-        if self.bird_switch_timer <= 0:
+        if self.bird_switch_timer <= 5:
             if self.bird.texture == self.bird_texture1:
                 self.bird.texture = self.bird_texture2
             else:
@@ -89,7 +89,6 @@ class GameWidget(Widget):
         with self.canvas:
             self.speeds = Rectangle(source='slowness.png', pos=self.speeds_pos, size=(200, 100))
             
-            
 
     def _on_keyboard_closed(self):
         self._keyboard.unbind(on_key_down=self._on_key_down)
@@ -98,19 +97,13 @@ class GameWidget(Widget):
 
     def _on_key_down(self, keyboard, keycode, text, modifiers):
         
-        print('down', text)
         self.pressed_keys.add(text)
 
 
     def _on_key_up(self, keyboard, keycode):
         text = keycode[1]
-        print('up', text)
         if text in self.pressed_keys:       
             self.pressed_keys.remove(text)
-
-    def update_bird_texture2(self):
-        self.bird_texture = Image(source='bird2.png').texture
-        self.bird.texture = self.bird_texture
 
     def move_step(self, dt):
         self.update_bird_texture()
@@ -143,6 +136,7 @@ class GameWidget(Widget):
         if collides((cur_x, cur_y, 00, 100), (self.coin_pos[0], self.coin_pos[1], self.coin.size[0], self.coin.size[1])):
             self.score += 1
             self.score_label.text = f'Score: {self.score}'
+
             print(self.score)
         if self.slowness_pos[0] < -9000:
             self.create_slowness()
@@ -162,7 +156,6 @@ class GameWidget(Widget):
 class Background(Widget):
     cloud_texture = ObjectProperty(None)
     floor_texture = ObjectProperty(None)
-    bird_texture = ObjectProperty(None)
     slowness_texture = ObjectProperty(None)
     speeds_texture = ObjectProperty(None)
     
