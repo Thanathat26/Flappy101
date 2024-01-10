@@ -15,7 +15,8 @@ from random import randint
 from kivy.uix.label import Label
 from kivy.uix.popup import Popup
 from kivy.uix.label import Label
-Builder.load_file('flappy.kv')
+from kivy.uix.button import Button
+kv = Builder.load_file('flappy.kv')
 def collides(rect1,rect2):
     return (
         rect1[0] < rect2[0] + rect2[2] and
@@ -30,9 +31,10 @@ class GameWidget(Widget):
     speeds_pos = ObjectProperty((700, 500))
     coin_speed = 800
     enemy_speed = 600
-    slowness_speed = 600
-    speeds_speed = 500
+    slowness_speed = 900
+    speeds_speed = 900
     score = 0
+    
     def create_collision_popup(self):
         content = Label(text='Collision Detected!\nGame Over', font_size=20)
         popup = Popup(title='Collision', content=content, size_hint=(None, None), size=(400, 200))
@@ -82,14 +84,27 @@ class GameWidget(Widget):
         self._keyboard = None
 
     def _on_key_down(self, keyboard, keycode, text, modifiers):
+        
         print('down', text)
         self.pressed_keys.add(text)
+        self.update_bird_texture2()
 
     def _on_key_up(self, keyboard, keycode):
         text = keycode[1]
         print('up', text)
-        if text in self.pressed_keys:
+        if text in self.pressed_keys:       
             self.pressed_keys.remove(text)
+        self.update_bird_texture()
+    def update_bird_texture(self):
+        if any(key in self.pressed_keys for key in ['w', 'a', 's', 'd']):
+          self.bird_texture = Image(source='bird3.png').texture
+        else:
+          self.bird_texture = Image(source='bird2.png').texture
+        self.bird.texture = self.bird_texture
+
+    def update_bird_texture2(self):
+        self.bird_texture = Image(source='bird2.png').texture
+        self.bird.texture = self.bird_texture
 
     def move_step(self, dt):
         cur_x = self.bird.pos[0]
@@ -176,11 +191,14 @@ class Gameflappy(App):
         layout = FloatLayout()
         background = Background()
         game_widget = GameWidget()
+        #start_button = Button(text='Start Game', size_hint=(0.3, 0.2), pos_hint={'center_x': 0.5, 'center_y': 0.5})
+        #start_button.bind(on_release=self.start_game)
+        #start_screen.add_widget(start_button)
         layout.add_widget(background)
         Clock.schedule_interval(background.scroll_texture, 1/60.)
         layout.add_widget(game_widget)
-
         return layout
-
+    def start_game(self, instance):
+        self.root.current = 'game'
 if __name__ == '__main__':
     Gameflappy().run()
