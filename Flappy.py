@@ -16,6 +16,7 @@ from kivy.uix.label import Label
 from kivy.uix.popup import Popup
 from kivy.uix.label import Label
 from kivy.uix.button import Button
+from kivy.clock import mainthread
 kv = Builder.load_file('flappy.kv')
 def collides(rect1,rect2):
     return (
@@ -29,12 +30,24 @@ class GameWidget(Widget):
     enemy_pos = ObjectProperty((500, 200))
     slow_pos = ObjectProperty((700, 500))
     speeds_pos = ObjectProperty((700, 500))
+    bird_texture1 = Image(source='bird2.png').texture
+    bird_texture2 = Image(source='bird3.png').texture
+    bird_switch_time = 10.0
+    bird_switch_timer = bird_switch_time
     coin_speed = 800
     enemy_speed = 600
     slowness_speed = 900
     speeds_speed = 900
     score = 0
-    
+    def update_bird_texture(self):
+        if self.bird_switch_timer <= 0:
+            if self.bird.texture == self.bird_texture1:
+                self.bird.texture = self.bird_texture2
+            else:
+                self.bird.texture = self.bird_texture1
+            self.bird_switch_timer = self.bird_switch_time
+
+        self.bird_switch_timer -= 0.1
     def create_collision_popup(self):
         content = Label(text='Collision Detected!\nGame Over', font_size=20)
         popup = Popup(title='Collision', content=content, size_hint=(None, None), size=(400, 200))
@@ -87,26 +100,20 @@ class GameWidget(Widget):
         
         print('down', text)
         self.pressed_keys.add(text)
-        self.update_bird_texture2()
+
 
     def _on_key_up(self, keyboard, keycode):
         text = keycode[1]
         print('up', text)
         if text in self.pressed_keys:       
             self.pressed_keys.remove(text)
-        self.update_bird_texture()
-    def update_bird_texture(self):
-        if any(key in self.pressed_keys for key in ['w', 'a', 's', 'd']):
-          self.bird_texture = Image(source='bird3.png').texture
-        else:
-          self.bird_texture = Image(source='bird2.png').texture
-        self.bird.texture = self.bird_texture
 
     def update_bird_texture2(self):
         self.bird_texture = Image(source='bird2.png').texture
         self.bird.texture = self.bird_texture
 
     def move_step(self, dt):
+        self.update_bird_texture()
         cur_x = self.bird.pos[0]
         cur_y = self.bird.pos[1]
         step = 300 * dt
@@ -174,17 +181,12 @@ class Background(Widget):
         self.floor_texture.wrap = 'repeat'
         self.floor_texture.uvsize = (Window.width / self.cloud_texture.width, -1)
 
-        self.bird_texture = Image(source='bird2.png').texture
-
     def scroll_texture(self, time_passed):
         self.cloud_texture.uvpos = ((self.cloud_texture.uvpos[0] + time_passed) % Window.width, self.cloud_texture.uvpos[1])
         self.floor_texture.uvpos = ((self.floor_texture.uvpos[0] + time_passed) % Window.width, self.floor_texture.uvpos[1])
-        self.bird_texture.uvpos = ((self.bird_texture.uvpos[0] + time_passed) % Window.width, self.bird_texture.uvpos[1])
         texture = self.property('cloud_texture')
         texture.dispatch(self)
         texture = self.property('floor_texture')
-        texture.dispatch(self)
-        texture = self.property('bird_texture')
         texture.dispatch(self)
 class Gameflappy(App):
     def build(self):
