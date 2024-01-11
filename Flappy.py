@@ -56,7 +56,7 @@ class GameWidget(Widget):
         Clock.schedule_once(lambda dt: self.close_game(), 3)
     def __init__(self, **kwargs):
         super().__init__(**kwargs)
-        self.score_label = Label(text='Score: ', pos=(Window.width - 200, Window.height - 90), font_size=60)
+        self.score_label = Label(text='Score: ', pos=(Window.width - 200, Window.height - 90), font_size=60,color=(0, 0, 0, 1))
         self.add_widget(self.score_label)
         self._keyboard = Window.request_keyboard(
             self._on_keyboard_closed, self)
