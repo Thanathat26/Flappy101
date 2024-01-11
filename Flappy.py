@@ -56,6 +56,8 @@ class GameWidget(Widget):
         Clock.schedule_once(lambda dt: self.close_game(), 3)
     def __init__(self, **kwargs):
         super().__init__(**kwargs)
+        self.score_label = Label(text='Score: ', pos=(Window.width - 200, Window.height - 90), font_size=60)
+        self.add_widget(self.score_label)
         self._keyboard = Window.request_keyboard(
             self._on_keyboard_closed, self)
         self._keyboard.bind(on_key_down=self._on_key_down)
@@ -63,7 +65,6 @@ class GameWidget(Widget):
         self.pressed_keys = set()
         self.sound = SoundLoader.load('CHIPI.mp3')
         self.sound.play()
-        self.score_label = Label(text='Score: 0', pos=(Window.width - 100, Window.height - 50), font_size=20)
         Clock.schedule_interval(self.move_step, 0)
         with self.canvas:
             self.bird = Rectangle(source='bird2.png', pos=self.bird_pos, size=(100, 100))
@@ -89,7 +90,7 @@ class GameWidget(Widget):
         with self.canvas:
             self.speeds = Rectangle(source='slowness.png', pos=self.speeds_pos, size=(200, 100))
             
-
+    
     def _on_keyboard_closed(self):
         self._keyboard.unbind(on_key_down=self._on_key_down)
         self._keyboard.unbind(on_key_up=self._on_key_up)
@@ -136,7 +137,8 @@ class GameWidget(Widget):
         if collides((cur_x, cur_y, 00, 100), (self.coin_pos[0], self.coin_pos[1], self.coin.size[0], self.coin.size[1])):
             self.score += 1
             self.score_label.text = f'Score: {self.score}'
-
+            self.score_label.pos = (Window.width - 200, Window.height - 90)  
+            print(self.score)
             print(self.score)
         if self.slowness_pos[0] < -9000:
             self.create_slowness()
@@ -150,7 +152,6 @@ class GameWidget(Widget):
         if collides((cur_x, cur_y, 00, 100), (self.speeds_pos[0], self.speeds_pos[1], self.speeds.size[0], self.speeds.size[1])):
             self.coin_speed += 10
             self.enemy_speed += 10
-
     def close_game(self):
         App.get_running_app().stop()
 class Background(Widget):
@@ -186,14 +187,14 @@ class Gameflappy(App):
         layout = FloatLayout()
         background = Background()
         game_widget = GameWidget()
-        #start_button = Button(text='Start Game', size_hint=(0.3, 0.2), pos_hint={'center_x': 0.5, 'center_y': 0.5})
-        #start_button.bind(on_release=self.start_game)
-        #start_screen.add_widget(start_button)
+        start_button = Button(text='Start Game', size_hint=(0.3, 0.2), pos_hint={'center_x': 0.5, 'center_y': 0.5})
+        start_button.bind(on_release=self.remove_button)
         layout.add_widget(background)
         Clock.schedule_interval(background.scroll_texture, 1/60.)
         layout.add_widget(game_widget)
+        layout.add_widget(start_button)
         return layout
-    def start_game(self, instance):
-        self.root.current = 'game'
+    def remove_button(self, instance):
+        instance.parent.remove_widget(instance) 
 if __name__ == '__main__':
     Gameflappy().run()
