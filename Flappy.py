@@ -34,7 +34,7 @@ class GameWidget(Widget):
     bird_switch_timer = bird_switch_time
     coin_speed = 800
     enemy_speed = 600
-    enemy1_speed = 900
+    enemy1_speed = 1300
     slowness_speed = 900
     speeds_speed = 900
     score = 0
@@ -55,6 +55,7 @@ class GameWidget(Widget):
         Clock.schedule_once(lambda dt: self.close_game(), 3)
     def __init__(self, **kwargs):
         super().__init__(**kwargs)
+        self.coin_sound = SoundLoader.load('coin.mp3')
         self.score_label = Label(text='Score: ', pos=(Window.width - 200, Window.height - 90), font_size=60,color=(0, 0, 0, 1))
         self.add_widget(self.score_label)
         self._keyboard = Window.request_keyboard(
@@ -75,7 +76,7 @@ class GameWidget(Widget):
     def create_enemy1(self):
         self.enemy1_pos = (Window.width, randint(50, Window.height - 200))
         with self.canvas:
-            self.enemy1 = Rectangle(source='bullet.png', pos=self.enemy1_pos, size=(200, 100))
+            self.enemy1 = Rectangle(source='bullet.png', pos=self.enemy1_pos, size=(100, 50))
     def create_enemy(self):
         self.enemy_pos = (Window.width, randint(50, Window.height - 200))
         with self.canvas:
@@ -146,11 +147,11 @@ class GameWidget(Widget):
             self.score += 1
             self.score_label.text = f'Score: {self.score}'
             self.score_label.pos = (Window.width - 200, Window.height - 90)  
-            print(self.score)
-            print(self.score)
+            if self.coin_sound:
+             self.coin_sound.play()
         if self.slowness_pos[0] < -9000:
             self.create_slowness()
-        if self.enemy1_pos[0] < -300:
+        if self.enemy1_pos[0] < -4000:
             self.create_enemy1()
         if self.speeds_pos[0] < -150:
             self.create_speeds()
@@ -178,10 +179,6 @@ class Background(Widget):
         self.cloud_texture.wrap = 'repeat'
         self.cloud_texture.uvsize = (Window.width / self.cloud_texture.width, -1)
         
-        self.slowness_texture = Image(source="slowness1.png").texture
-        self.speeds_texture = Image(source="slowness.png").texture
-
-
         self.floor_texture = Image(source="floor3.png").texture
         self.floor_texture.wrap = 'repeat'
         self.floor_texture.uvsize = (Window.width / self.cloud_texture.width, -1)
