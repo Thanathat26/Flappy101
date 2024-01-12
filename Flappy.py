@@ -8,15 +8,12 @@ from kivy.core.window import Window
 from kivy.graphics import Rectangle
 from kivy.uix.image import Image
 from kivy.properties import ObjectProperty
-from PIL import Image as PilImage
-from io import BytesIO
 from kivy.core.audio import SoundLoader
 from random import randint
 from kivy.uix.label import Label
 from kivy.uix.popup import Popup
 from kivy.uix.label import Label
 from kivy.uix.button import Button
-from kivy.clock import mainthread
 kv = Builder.load_file('flappy.kv')
 def collides(rect1,rect2):
     return (
@@ -28,6 +25,7 @@ class GameWidget(Widget):
     bird_pos = ObjectProperty((100, 200))
     coin_pos = ObjectProperty((500, 200))
     enemy_pos = ObjectProperty((500, 200))
+    enemy1_pos = ObjectProperty((500, 200))
     slow_pos = ObjectProperty((700, 500))
     speeds_pos = ObjectProperty((700, 500))
     bird_texture1 = Image(source='bird2.png').texture
@@ -36,6 +34,7 @@ class GameWidget(Widget):
     bird_switch_timer = bird_switch_time
     coin_speed = 800
     enemy_speed = 600
+    enemy1_speed = 900
     slowness_speed = 900
     speeds_speed = 900
     score = 0
@@ -72,6 +71,11 @@ class GameWidget(Widget):
         self.create_coin()
         self.create_slowness()
         self.create_speeds()
+        self.create_enemy1()
+    def create_enemy1(self):
+        self.enemy1_pos = (Window.width, randint(50, Window.height - 200))
+        with self.canvas:
+            self.enemy1 = Rectangle(source='bullet.png', pos=self.enemy1_pos, size=(200, 100))
     def create_enemy(self):
         self.enemy_pos = (Window.width, randint(50, Window.height - 200))
         with self.canvas:
@@ -130,11 +134,15 @@ class GameWidget(Widget):
         self.slowness.pos = self.slowness_pos
         self.speeds_pos = (self.speeds_pos[0] - self.speeds_speed * dt, self.speeds_pos[1])
         self.speeds.pos = self.speeds_pos
+        self.enemy1_pos = (self.enemy1_pos[0] - self.enemy1_speed * dt, self.enemy1_pos[1])
+        self.enemy1.pos = self.enemy1_pos
         if self.enemy_pos[0] < -100:
             self.create_enemy()
-        if collides((cur_x, cur_y, 100, 100), (self.enemy_pos[0], self.enemy_pos[1], self.enemy.size[0], self.enemy.size[1])):
+        if collides((cur_x, cur_y, 100, 50), (self.enemy_pos[0], self.enemy_pos[1], self.enemy.size[0], self.enemy.size[1])):
             self.create_collision_popup()
-        if collides((cur_x, cur_y, 00, 100), (self.coin_pos[0], self.coin_pos[1], self.coin.size[0], self.coin.size[1])):
+        if collides((cur_x, cur_y, 100, 50), (self.enemy1_pos[0], self.enemy1_pos[1], self.enemy1.size[0], self.enemy1.size[1])):
+            self.create_collision_popup()
+        if collides((cur_x, cur_y, 00, 50), (self.coin_pos[0], self.coin_pos[1], self.coin.size[0], self.coin.size[1])):
             self.score += 1
             self.score_label.text = f'Score: {self.score}'
             self.score_label.pos = (Window.width - 200, Window.height - 90)  
@@ -142,16 +150,19 @@ class GameWidget(Widget):
             print(self.score)
         if self.slowness_pos[0] < -9000:
             self.create_slowness()
-            
+        if self.enemy1_pos[0] < -300:
+            self.create_enemy1()
         if self.speeds_pos[0] < -150:
             self.create_speeds()
 
         if collides((cur_x, cur_y, 00, 100), (self.slowness_pos[0], self.slowness_pos[1], self.slowness.size[0], self.slowness.size[1])):
             self.coin_speed -= 10
             self.enemy_speed -= 10
+            self.enemy1_speed -= 10
         if collides((cur_x, cur_y, 00, 100), (self.speeds_pos[0], self.speeds_pos[1], self.speeds.size[0], self.speeds.size[1])):
             self.coin_speed += 10
             self.enemy_speed += 10
+            self.enemy1_speed += 10
     def close_game(self):
         App.get_running_app().stop()
 class Background(Widget):
